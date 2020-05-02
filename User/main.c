@@ -4,13 +4,13 @@
   * @author  fire
   * @version V1.0
   * @date    2013-xx-xx
-  * @brief   AT24C02²âÊÔ£¨Èí¼şÄ£ÄâI2C£©
+  * @brief   AT24C02æµ‹è¯•ï¼ˆè½¯ä»¶æ¨¡æ‹ŸI2Cï¼‰
   ******************************************************************************
   * @attention
   *
-  * ÊµÑéÆ½Ì¨:Ò°»ğ F103-Ö¸ÄÏÕß STM32 ¿ª·¢°å 
-  * ÂÛÌ³    :http://www.firebbs.cn
-  * ÌÔ±¦    :https://fire-stm32.taobao.com
+  * å®éªŒå¹³å°:é‡ç« F103-æŒ‡å—è€… STM32 å¼€å‘æ¿ 
+  * è®ºå›    :http://www.firebbs.cn
+  * æ·˜å®    :https://fire-stm32.taobao.com
   *
   ******************************************************************************
   */
@@ -21,9 +21,9 @@
 #include "./i2c/bsp_i2c_ee.h"
 
  /**
-  * @brief  Ö÷º¯Êı
-  * @param  ÎŞ
-  * @retval ÎŞ
+  * @brief  ä¸»å‡½æ•°
+  * @param  æ— 
+  * @retval æ— 
   */
 int main(void)
 {
@@ -32,10 +32,10 @@ int main(void)
   
     LED_BLUE;
 
-    /* ´®¿Ú³õÊ¼»¯ */
+    /* ä¸²å£åˆå§‹åŒ– */
 		USART_Config();
 
-		printf("eeprom Èí¼şÄ£Äâi2c²âÊÔÀı³Ì \r\n");		
+		printf("eeprom è½¯ä»¶æ¨¡æ‹Ÿi2cæµ‹è¯•ä¾‹ç¨‹ \r\n");		
   
     if(ee_Test() == 1)
   	{

@@ -15,14 +15,14 @@
  * 1 0 1 0 0  0  0  1 = 0XA1 
  */
 
-/* AT24C01/02ÿҳ��8���ֽ� 
- * AT24C04/08A/16Aÿҳ��16���ֽ� 
+/* AT24C01/02每页有8个字节 
+ * AT24C04/08A/16A每页有16个字节 
  */
 	
 
-#define EEPROM_DEV_ADDR			0xA0		/* 24xx02���豸��ַ */
-#define EEPROM_PAGE_SIZE		  8			  /* 24xx02��ҳ���С */
-#define EEPROM_SIZE				  256			  /* 24xx02������ */
+#define EEPROM_DEV_ADDR			0xA0		/* 24xx02的设备地址 */
+#define EEPROM_PAGE_SIZE		  8			  /* 24xx02的页面大小 */
+#define EEPROM_SIZE				  256			  /* 24xx02总容量 */
 
 
 uint8_t ee_CheckOk(void);
