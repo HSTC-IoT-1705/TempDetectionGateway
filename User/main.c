@@ -1,50 +1,40 @@
 /**
-  ******************************************************************************
-  * @file    main.c
-  * @author  fire
-  * @version V1.0
-  * @date    2013-xx-xx
-  * @brief   AT24C02æµ‹è¯•ï¼ˆè½¯ä»¶æ¨¡æ‹ŸI2Cï¼‰
-  ******************************************************************************
-  * @attention
-  *
-  * å®éªŒå¹³å°:é‡ç« F103-æŒ‡å—è€… STM32 å¼€å‘æ¿ 
-  * è®ºå›    :http://www.firebbs.cn
-  * æ·˜å®    :https://fire-stm32.taobao.com
-  *
-  ******************************************************************************
-  */
-  
+	******************************************************************************
+	* @file    main.c
+	* @author  fire
+	* @version V1.0
+	* @date    2013-xx-xx
+	* @brief   AT24C02²âÊÔ£¨Èí¼şÄ£ÄâI2C£©
+	******************************************************************************
+	* @attention
+	*
+	* ÊµÑéÆ½Ì¨:Ò°»ğ F103-Ö¸ÄÏÕß STM32 ¿ª·¢°å 
+	* ÂÛÌ³    :http://www.firebbs.cn
+	* ÌÔ±¦    :https://fire-stm32.taobao.com
+	*
+	******************************************************************************
+	*/
+	
 #include "stm32f10x.h"
 #include "./usart/bsp_usart.h"
-#include "./led/bsp_led.h" 
 #include "./i2c/bsp_i2c_ee.h"
+#include "temp_mlx90615.h"
 
  /**
-  * @brief  ä¸»å‡½æ•°
-  * @param  æ— 
-  * @retval æ— 
+  * @brief  Ö÷º¯Êı
+  * @param  ÎŞ
+  * @retval ÎŞ
   */
 int main(void)
 {
-  
-    LED_GPIO_Config();
-  
-    LED_BLUE;
+	/* ´®¿Ú³õÊ¼»¯ */
+	USART_Config();
+	printf("MLX90615 ¶îÎÂÇ¹´«¸ĞÆ÷ ÎÂ¶È¶ÁÈ¡²âÊÔ \r\n");		
 
-    /* ä¸²å£åˆå§‹åŒ– */
-		USART_Config();
+	printf("MLX90615 ID: %d \n", Temp_GetId());
+	printf("MLX90615 Ambient Temp: %.2f \n", Temp_GetAmbientTemp());
+	printf("MLX90615 Obejct Temp: %.2f \n", Temp_GetObjectTemp());
 
-		printf("eeprom è½¯ä»¶æ¨¡æ‹Ÿi2cæµ‹è¯•ä¾‹ç¨‹ \r\n");		
-  
-    if(ee_Test() == 1)
-  	{
-			LED_GREEN;
-    }
-    else
-    {
-        LED_RED;
-    }
-    while(1);
+	while(1);
 }
 /*********************************************END OF FILE**********************/
