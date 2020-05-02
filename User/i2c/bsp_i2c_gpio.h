@@ -1,41 +1,36 @@
 #ifndef _BSP_I2C_GPIO_H
 #define _BSP_I2C_GPIO_H
 
-
 #include <inttypes.h>
 
+#define EEPROM_I2C_WR	0		/* Ð´¿ØÖÆbit */
+#define EEPROM_I2C_RD	1		/* ¶Á¿ØÖÆbit */
 
-#define EEPROM_I2C_WR	0		/* å†™æŽ§åˆ¶bit */
-#define EEPROM_I2C_RD	1		/* è¯»æŽ§åˆ¶bit */
+/* ¶¨ÒåI2C×ÜÏßÁ¬½ÓµÄGPIO¶Ë¿Ú, ÓÃ»§Ö»ÐèÒªÐÞ¸ÄÏÂÃæ4ÐÐ´úÂë¼´¿ÉÈÎÒâ¸Ä±äSCLºÍSDAµÄÒý½Å */
+#define EEPROM_GPIO_PORT_I2C	GPIOB			/* GPIO¶Ë¿Ú */
+#define EEPROM_RCC_I2C_PORT 	RCC_APB2Periph_GPIOB		/* GPIO¶Ë¿ÚÊ±ÖÓ */
+#define EEPROM_I2C_SCL_PIN		GPIO_Pin_5			/* Á¬½Óµ½SCLÊ±ÖÓÏßµÄGPIO */
+#define EEPROM_I2C_SDA_PIN		GPIO_Pin_6			/* Á¬½Óµ½SDAÊý¾ÝÏßµÄGPIO */
 
-
-/* å®šä¹‰I2Cæ€»çº¿è¿žæŽ¥çš„GPIOç«¯å£, ç”¨æˆ·åªéœ€è¦ä¿®æ”¹ä¸‹é¢4è¡Œä»£ç å³å¯ä»»æ„æ”¹å˜SCLå’ŒSDAçš„å¼•è„š */
-#define EEPROM_GPIO_PORT_I2C	GPIOB			/* GPIOç«¯å£ */
-#define EEPROM_RCC_I2C_PORT 	RCC_APB2Periph_GPIOB		/* GPIOç«¯å£æ—¶é’Ÿ */
-#define EEPROM_I2C_SCL_PIN		GPIO_Pin_6			/* è¿žæŽ¥åˆ°SCLæ—¶é’Ÿçº¿çš„GPIO */
-#define EEPROM_I2C_SDA_PIN		GPIO_Pin_7			/* è¿žæŽ¥åˆ°SDAæ•°æ®çº¿çš„GPIO */
-
-
-/* å®šä¹‰è¯»å†™SCLå’ŒSDAçš„å®ï¼Œå·²å¢žåŠ ä»£ç çš„å¯ç§»æ¤æ€§å’Œå¯é˜…è¯»æ€§ */
-#if 0	/* æ¡ä»¶ç¼–è¯‘ï¼š 1 é€‰æ‹©GPIOçš„åº“å‡½æ•°å®žçŽ°IOè¯»å†™ */
+/* ¶¨Òå¶ÁÐ´SCLºÍSDAµÄºê£¬ÒÑÔö¼Ó´úÂëµÄ¿ÉÒÆÖ²ÐÔºÍ¿ÉÔÄ¶ÁÐÔ */
+#if 1	/* Ìõ¼þ±àÒë£º 1 Ñ¡ÔñGPIOµÄ¿âº¯ÊýÊµÏÖIO¶ÁÐ´ */
 	#define EEPROM_I2C_SCL_1()  GPIO_SetBits(EEPROM_GPIO_PORT_I2C, EEPROM_I2C_SCL_PIN)		/* SCL = 1 */
 	#define EEPROM_I2C_SCL_0()  GPIO_ResetBits(EEPROM_GPIO_PORT_I2C, EEPROM_I2C_SCL_PIN)		/* SCL = 0 */
 	
 	#define EEPROM_I2C_SDA_1()  GPIO_SetBits(EEPROM_GPIO_PORT_I2C, EEPROM_I2C_SDA_PIN)		/* SDA = 1 */
 	#define EEPROM_I2C_SDA_0()  GPIO_ResetBits(EEPROM_GPIO_PORT_I2C, EEPROM_I2C_SDA_PIN)		/* SDA = 0 */
 	
-	#define EEPROM_I2C_SDA_READ()  GPIO_ReadInputDataBit(EEPROM_GPIO_PORT_I2C, EEPROM_I2C_SDA_PIN)	/* è¯»SDAå£çº¿çŠ¶æ€ */
-#else	/* è¿™ä¸ªåˆ†æ”¯é€‰æ‹©ç›´æŽ¥å¯„å­˜å™¨æ“ä½œå®žçŽ°IOè¯»å†™ */
-    /*ã€€æ³¨æ„ï¼šå¦‚ä¸‹å†™æ³•ï¼Œåœ¨IARæœ€é«˜çº§åˆ«ä¼˜åŒ–æ—¶ï¼Œä¼šè¢«ç¼–è¯‘å™¨é”™è¯¯ä¼˜åŒ– */
+	#define EEPROM_I2C_SDA_READ()  GPIO_ReadInputDataBit(EEPROM_GPIO_PORT_I2C, EEPROM_I2C_SDA_PIN)	/* ¶ÁSDA¿ÚÏß×´Ì¬ */
+#else	/* Õâ¸ö·ÖÖ§Ñ¡ÔñÖ±½Ó¼Ä´æÆ÷²Ù×÷ÊµÏÖIO¶ÁÐ´ */
+    /*¡¡×¢Òâ£ºÈçÏÂÐ´·¨£¬ÔÚIAR×î¸ß¼¶±ðÓÅ»¯Ê±£¬»á±»±àÒëÆ÷´íÎóÓÅ»¯ */
 	#define EEPROM_I2C_SCL_1()  EEPROM_GPIO_PORT_I2C->BSRR = EEPROM_I2C_SCL_PIN				/* SCL = 1 */
 	#define EEPROM_I2C_SCL_0()  EEPROM_GPIO_PORT_I2C->BRR = EEPROM_I2C_SCL_PIN				/* SCL = 0 */
 	
 	#define EEPROM_I2C_SDA_1()  EEPROM_GPIO_PORT_I2C->BSRR = EEPROM_I2C_SDA_PIN				/* SDA = 1 */
 	#define EEPROM_I2C_SDA_0()  EEPROM_GPIO_PORT_I2C->BRR = EEPROM_I2C_SDA_PIN				/* SDA = 0 */
 	
-	#define EEPROM_I2C_SDA_READ()  ((EEPROM_GPIO_PORT_I2C->IDR & EEPROM_I2C_SDA_PIN) != 0)	/* è¯»SDAå£çº¿çŠ¶æ€ */
+	#define EEPROM_I2C_SDA_READ()  ((EEPROM_GPIO_PORT_I2C->IDR & EEPROM_I2C_SDA_PIN) != 0)	/* ¶ÁSDA¿ÚÏß×´Ì¬ */
 #endif
-
 
 void i2c_Start(void);
 void i2c_Stop(void);
@@ -45,7 +40,6 @@ uint8_t i2c_WaitAck(void);
 void i2c_Ack(void);
 void i2c_NAck(void);
 uint8_t i2c_CheckDevice(uint8_t _Address);
-
 
 #endif
 

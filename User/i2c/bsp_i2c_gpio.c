@@ -3,20 +3,20 @@
   * @file    bsp_i2c_ee.c
   * @version V1.0
   * @date    2013-xx-xx
-  * @brief   ç”¨gpioæ¨¡æ‹Ÿi2cæ€»çº¿, é€‚ç”¨äºŽSTM32ç³»åˆ—CPUã€‚è¯¥æ¨¡å—ä¸åŒ…æ‹¬åº”ç”¨å±‚å‘½ä»¤å¸§ï¼Œä»…åŒ…æ‹¬I2Cæ€»çº¿åŸºæœ¬æ“ä½œå‡½æ•°ã€‚
+  * @brief   ÓÃgpioÄ£Äâi2c×ÜÏß, ÊÊÓÃÓÚSTM32ÏµÁÐCPU¡£¸ÃÄ£¿é²»°üÀ¨Ó¦ÓÃ²ãÃüÁîÖ¡£¬½ö°üÀ¨I2C×ÜÏß»ù±¾²Ù×÷º¯Êý¡£
   ******************************************************************************
   * @attention
   *
-  * å®žéªŒå¹³å°:é‡Žç« F103-æŒ‡å—è€… STM32 å¼€å‘æ¿ 
-  * è®ºå›    :http://www.firebbs.cn
-  * æ·˜å®    :https://fire-stm32.taobao.com
+  * ÊµÑéÆ½Ì¨:Ò°»ð F103-Ö¸ÄÏÕß STM32 ¿ª·¢°å 
+  * ÂÛÌ³    :http://www.firebbs.cn
+  * ÌÔ±¦    :https://fire-stm32.taobao.com
   *
   ******************************************************************************
   */ 
 
 /*
-	åº”ç”¨è¯´æ˜Žï¼š
-	åœ¨è®¿é—®I2Cè®¾å¤‡å‰ï¼Œè¯·å…ˆè°ƒç”¨ i2c_CheckDevice() æ£€æµ‹I2Cè®¾å¤‡æ˜¯å¦æ­£å¸¸ï¼Œè¯¥å‡½æ•°ä¼šé…ç½®GPIO
+	Ó¦ÓÃËµÃ÷£º
+	ÔÚ·ÃÎÊI2CÉè±¸Ç°£¬ÇëÏÈµ÷ÓÃ i2c_CheckDevice() ¼ì²âI2CÉè±¸ÊÇ·ñÕý³££¬¸Ãº¯Êý»áÅäÖÃGPIO
 
 */
 #include "bsp_i2c_gpio.h"
@@ -28,38 +28,39 @@ static void i2c_CfgGpio(void);
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_Delay
-*	åŠŸèƒ½è¯´æ˜Ž: I2Cæ€»çº¿ä½å»¶è¿Ÿï¼Œæœ€å¿«400KHz
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_Delay
+*	¹¦ÄÜËµÃ÷: I2C×ÜÏßÎ»ÑÓ³Ù£¬×î¿ì400KHz
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 static void i2c_Delay(void)
 {
 	uint8_t i;
 
-	/*ã€€
-	 	ä¸‹é¢çš„æ—¶é—´æ˜¯é€šè¿‡é€»è¾‘åˆ†æžä»ªæµ‹è¯•å¾—åˆ°çš„ã€‚
-    å·¥ä½œæ¡ä»¶ï¼šCPUä¸»é¢‘72MHz ï¼ŒMDKç¼–è¯‘çŽ¯å¢ƒï¼Œ1çº§ä¼˜åŒ–
+	/*¡¡
+	 	ÏÂÃæµÄÊ±¼äÊÇÍ¨¹ýÂß¼­·ÖÎöÒÇ²âÊÔµÃµ½µÄ¡£
+    ¹¤×÷Ìõ¼þ£ºCPUÖ÷Æµ72MHz £¬MDK±àÒë»·¾³£¬1¼¶ÓÅ»¯
   
-		å¾ªçŽ¯æ¬¡æ•°ä¸º10æ—¶ï¼ŒSCLé¢‘çŽ‡ = 205KHz 
-		å¾ªçŽ¯æ¬¡æ•°ä¸º7æ—¶ï¼ŒSCLé¢‘çŽ‡ = 347KHzï¼Œ SCLé«˜ç”µå¹³æ—¶é—´1.5usï¼ŒSCLä½Žç”µå¹³æ—¶é—´2.87us 
-	 	å¾ªçŽ¯æ¬¡æ•°ä¸º5æ—¶ï¼ŒSCLé¢‘çŽ‡ = 421KHzï¼Œ SCLé«˜ç”µå¹³æ—¶é—´1.25usï¼ŒSCLä½Žç”µå¹³æ—¶é—´2.375us 
+		Ñ­»·´ÎÊýÎª10Ê±£¬SCLÆµÂÊ = 205KHz 
+		Ñ­»·´ÎÊýÎª7Ê±£¬SCLÆµÂÊ = 347KHz£¬ SCL¸ßµçÆ½Ê±¼ä1.5us£¬SCLµÍµçÆ½Ê±¼ä2.87us 
+	 	Ñ­»·´ÎÊýÎª5Ê±£¬SCLÆµÂÊ = 421KHz£¬ SCL¸ßµçÆ½Ê±¼ä1.25us£¬SCLµÍµçÆ½Ê±¼ä2.375us 
 	*/
 	for (i = 0; i < 10; i++);
+	//for (i = 0; i < 200; i++);
 }
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_Start
-*	åŠŸèƒ½è¯´æ˜Ž: CPUå‘èµ·I2Cæ€»çº¿å¯åŠ¨ä¿¡å·
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_Start
+*	¹¦ÄÜËµÃ÷: CPU·¢ÆðI2C×ÜÏßÆô¶¯ÐÅºÅ
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 void i2c_Start(void)
 {
-	/* å½“SCLé«˜ç”µå¹³æ—¶ï¼ŒSDAå‡ºçŽ°ä¸€ä¸ªä¸‹è·³æ²¿è¡¨ç¤ºI2Cæ€»çº¿å¯åŠ¨ä¿¡å· */
+	/* µ±SCL¸ßµçÆ½Ê±£¬SDA³öÏÖÒ»¸öÏÂÌøÑØ±íÊ¾I2C×ÜÏßÆô¶¯ÐÅºÅ */
 	EEPROM_I2C_SDA_1();
 	EEPROM_I2C_SCL_1();
 	i2c_Delay();
@@ -71,15 +72,15 @@ void i2c_Start(void)
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_Start
-*	åŠŸèƒ½è¯´æ˜Ž: CPUå‘èµ·I2Cæ€»çº¿åœæ­¢ä¿¡å·
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_Start
+*	¹¦ÄÜËµÃ÷: CPU·¢ÆðI2C×ÜÏßÍ£Ö¹ÐÅºÅ
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 void i2c_Stop(void)
 {
-	/* å½“SCLé«˜ç”µå¹³æ—¶ï¼ŒSDAå‡ºçŽ°ä¸€ä¸ªä¸Šè·³æ²¿è¡¨ç¤ºI2Cæ€»çº¿åœæ­¢ä¿¡å· */
+	/* µ±SCL¸ßµçÆ½Ê±£¬SDA³öÏÖÒ»¸öÉÏÌøÑØ±íÊ¾I2C×ÜÏßÍ£Ö¹ÐÅºÅ */
 	EEPROM_I2C_SDA_0();
 	EEPROM_I2C_SCL_1();
 	i2c_Delay();
@@ -88,17 +89,19 @@ void i2c_Stop(void)
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_SendByte
-*	åŠŸèƒ½è¯´æ˜Ž: CPUå‘I2Cæ€»çº¿è®¾å¤‡å‘é€8bitæ•°æ®
-*	å½¢    å‚ï¼š_ucByte ï¼š ç­‰å¾…å‘é€çš„å­—èŠ‚
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_SendByte
+*	¹¦ÄÜËµÃ÷: CPUÏòI2C×ÜÏßÉè±¸·¢ËÍ8bitÊý¾Ý
+*	ÐÎ    ²Î£º_ucByte £º µÈ´ý·¢ËÍµÄ×Ö½Ú
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 void i2c_SendByte(uint8_t _ucByte)
 {
 	uint8_t i;
 
-	/* å…ˆå‘é€å­—èŠ‚çš„é«˜ä½bit7 */
+	printf("SendByte£º%02X \n", _ucByte);
+
+	/* ÏÈ·¢ËÍ×Ö½ÚµÄ¸ßÎ»bit7 */
 	for (i = 0; i < 8; i++)
 	{		
 		if (_ucByte & 0x80)
@@ -115,19 +118,19 @@ void i2c_SendByte(uint8_t _ucByte)
 		EEPROM_I2C_SCL_0();
 		if (i == 7)
 		{
-			 EEPROM_I2C_SDA_1(); // é‡Šæ”¾æ€»çº¿
+			 EEPROM_I2C_SDA_1(); // ÊÍ·Å×ÜÏß
 		}
-		_ucByte <<= 1;	/* å·¦ç§»ä¸€ä¸ªbit */
+		_ucByte <<= 1;	/* ×óÒÆÒ»¸öbit */
 		i2c_Delay();
 	}
 }
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_ReadByte
-*	åŠŸèƒ½è¯´æ˜Ž: CPUä»ŽI2Cæ€»çº¿è®¾å¤‡è¯»å–8bitæ•°æ®
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: è¯»åˆ°çš„æ•°æ®
+*	º¯ Êý Ãû: i2c_ReadByte
+*	¹¦ÄÜËµÃ÷: CPU´ÓI2C×ÜÏßÉè±¸¶ÁÈ¡8bitÊý¾Ý
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ¶Áµ½µÄÊý¾Ý
 *********************************************************************************************************
 */
 uint8_t i2c_ReadByte(void)
@@ -135,7 +138,7 @@ uint8_t i2c_ReadByte(void)
 	uint8_t i;
 	uint8_t value;
 
-	/* è¯»åˆ°ç¬¬1ä¸ªbitä¸ºæ•°æ®çš„bit7 */
+	/* ¶Áµ½µÚ1¸öbitÎªÊý¾ÝµÄbit7 */
 	value = 0;
 	for (i = 0; i < 8; i++)
 	{
@@ -154,21 +157,21 @@ uint8_t i2c_ReadByte(void)
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_WaitAck
-*	åŠŸèƒ½è¯´æ˜Ž: CPUäº§ç”Ÿä¸€ä¸ªæ—¶é’Ÿï¼Œå¹¶è¯»å–å™¨ä»¶çš„ACKåº”ç­”ä¿¡å·
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: è¿”å›ž0è¡¨ç¤ºæ­£ç¡®åº”ç­”ï¼Œ1è¡¨ç¤ºæ— å™¨ä»¶å“åº”
+*	º¯ Êý Ãû: i2c_WaitAck
+*	¹¦ÄÜËµÃ÷: CPU²úÉúÒ»¸öÊ±ÖÓ£¬²¢¶ÁÈ¡Æ÷¼þµÄACKÓ¦´ðÐÅºÅ
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ·µ»Ø0±íÊ¾ÕýÈ·Ó¦´ð£¬1±íÊ¾ÎÞÆ÷¼þÏìÓ¦
 *********************************************************************************************************
 */
 uint8_t i2c_WaitAck(void)
 {
 	uint8_t re;
 
-	EEPROM_I2C_SDA_1();	/* CPUé‡Šæ”¾SDAæ€»çº¿ */
+	EEPROM_I2C_SDA_1();	/* CPUÊÍ·ÅSDA×ÜÏß */
 	i2c_Delay();
-	EEPROM_I2C_SCL_1();	/* CPUé©±åŠ¨SCL = 1, æ­¤æ—¶å™¨ä»¶ä¼šè¿”å›žACKåº”ç­” */
+	EEPROM_I2C_SCL_1();	/* CPUÇý¶¯SCL = 1, ´ËÊ±Æ÷¼þ»á·µ»ØACKÓ¦´ð */
 	i2c_Delay();
-	if (EEPROM_I2C_SDA_READ())	/* CPUè¯»å–SDAå£çº¿çŠ¶æ€ */
+	if (EEPROM_I2C_SDA_READ())	/* CPU¶ÁÈ¡SDA¿ÚÏß×´Ì¬ */
 	{
 		re = 1;
 	}
@@ -183,36 +186,36 @@ uint8_t i2c_WaitAck(void)
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_Ack
-*	åŠŸèƒ½è¯´æ˜Ž: CPUäº§ç”Ÿä¸€ä¸ªACKä¿¡å·
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_Ack
+*	¹¦ÄÜËµÃ÷: CPU²úÉúÒ»¸öACKÐÅºÅ
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 void i2c_Ack(void)
 {
-	EEPROM_I2C_SDA_0();	/* CPUé©±åŠ¨SDA = 0 */
+	EEPROM_I2C_SDA_0();	/* CPUÇý¶¯SDA = 0 */
 	i2c_Delay();
-	EEPROM_I2C_SCL_1();	/* CPUäº§ç”Ÿ1ä¸ªæ—¶é’Ÿ */
+	EEPROM_I2C_SCL_1();	/* CPU²úÉú1¸öÊ±ÖÓ */
 	i2c_Delay();
 	EEPROM_I2C_SCL_0();
 	i2c_Delay();
-	EEPROM_I2C_SDA_1();	/* CPUé‡Šæ”¾SDAæ€»çº¿ */
+	EEPROM_I2C_SDA_1();	/* CPUÊÍ·ÅSDA×ÜÏß */
 }
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_NAck
-*	åŠŸèƒ½è¯´æ˜Ž: CPUäº§ç”Ÿ1ä¸ªNACKä¿¡å·
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_NAck
+*	¹¦ÄÜËµÃ÷: CPU²úÉú1¸öNACKÐÅºÅ
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 void i2c_NAck(void)
 {
-	EEPROM_I2C_SDA_1();	/* CPUé©±åŠ¨SDA = 1 */
+	EEPROM_I2C_SDA_1();	/* CPUÇý¶¯SDA = 1 */
 	i2c_Delay();
-	EEPROM_I2C_SCL_1();	/* CPUäº§ç”Ÿ1ä¸ªæ—¶é’Ÿ */
+	EEPROM_I2C_SCL_1();	/* CPU²úÉú1¸öÊ±ÖÓ */
 	i2c_Delay();
 	EEPROM_I2C_SCL_0();
 	i2c_Delay();	
@@ -220,49 +223,49 @@ void i2c_NAck(void)
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_CfgGpio
-*	åŠŸèƒ½è¯´æ˜Ž: é…ç½®I2Cæ€»çº¿çš„GPIOï¼Œé‡‡ç”¨æ¨¡æ‹ŸIOçš„æ–¹å¼å®žçŽ°
-*	å½¢    å‚ï¼šæ— 
-*	è¿” å›ž å€¼: æ— 
+*	º¯ Êý Ãû: i2c_CfgGpio
+*	¹¦ÄÜËµÃ÷: ÅäÖÃI2C×ÜÏßµÄGPIO£¬²ÉÓÃÄ£ÄâIOµÄ·½Ê½ÊµÏÖ
+*	ÐÎ    ²Î£ºÎÞ
+*	·µ »Ø Öµ: ÎÞ
 *********************************************************************************************************
 */
 static void i2c_CfgGpio(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
-	RCC_APB2PeriphClockCmd(EEPROM_RCC_I2C_PORT, ENABLE);	/* æ‰“å¼€GPIOæ—¶é’Ÿ */
+	RCC_APB2PeriphClockCmd(EEPROM_RCC_I2C_PORT, ENABLE);	/* ´ò¿ªGPIOÊ±ÖÓ */
 
 	GPIO_InitStructure.GPIO_Pin = EEPROM_I2C_SCL_PIN | EEPROM_I2C_SDA_PIN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;  	/* å¼€æ¼è¾“å‡º */
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;  	/* ¿ªÂ©Êä³ö */
 	GPIO_Init(EEPROM_GPIO_PORT_I2C, &GPIO_InitStructure);
 
-	/* ç»™ä¸€ä¸ªåœæ­¢ä¿¡å·, å¤ä½I2Cæ€»çº¿ä¸Šçš„æ‰€æœ‰è®¾å¤‡åˆ°å¾…æœºæ¨¡å¼ */
+	/* ¸øÒ»¸öÍ£Ö¹ÐÅºÅ, ¸´Î»I2C×ÜÏßÉÏµÄËùÓÐÉè±¸µ½´ý»úÄ£Ê½ */
 	i2c_Stop();
 }
 
 /*
 *********************************************************************************************************
-*	å‡½ æ•° å: i2c_CheckDevice
-*	åŠŸèƒ½è¯´æ˜Ž: æ£€æµ‹I2Cæ€»çº¿è®¾å¤‡ï¼ŒCPUå‘å‘é€è®¾å¤‡åœ°å€ï¼Œç„¶åŽè¯»å–è®¾å¤‡åº”ç­”æ¥åˆ¤æ–­è¯¥è®¾å¤‡æ˜¯å¦å­˜åœ¨
-*	å½¢    å‚ï¼š_Addressï¼šè®¾å¤‡çš„I2Cæ€»çº¿åœ°å€
-*	è¿” å›ž å€¼: è¿”å›žå€¼ 0 è¡¨ç¤ºæ­£ç¡®ï¼Œ è¿”å›ž1è¡¨ç¤ºæœªæŽ¢æµ‹åˆ°
+*	º¯ Êý Ãû: i2c_CheckDevice
+*	¹¦ÄÜËµÃ÷: ¼ì²âI2C×ÜÏßÉè±¸£¬CPUÏò·¢ËÍÉè±¸µØÖ·£¬È»ºó¶ÁÈ¡Éè±¸Ó¦´ðÀ´ÅÐ¶Ï¸ÃÉè±¸ÊÇ·ñ´æÔÚ
+*	ÐÎ    ²Î£º_Address£ºÉè±¸µÄI2C×ÜÏßµØÖ·
+*	·µ »Ø Öµ: ·µ»ØÖµ 0 ±íÊ¾ÕýÈ·£¬ ·µ»Ø1±íÊ¾Î´Ì½²âµ½
 *********************************************************************************************************
 */
 uint8_t i2c_CheckDevice(uint8_t _Address)
 {
 	uint8_t ucAck;
 
-	i2c_CfgGpio();		/* é…ç½®GPIO */
+	i2c_CfgGpio();		/* ÅäÖÃGPIO */
 
 	
-	i2c_Start();		/* å‘é€å¯åŠ¨ä¿¡å· */
+	i2c_Start();		/* ·¢ËÍÆô¶¯ÐÅºÅ */
 
-	/* å‘é€è®¾å¤‡åœ°å€+è¯»å†™æŽ§åˆ¶bitï¼ˆ0 = wï¼Œ 1 = r) bit7 å…ˆä¼  */
+	/* ·¢ËÍÉè±¸µØÖ·+¶ÁÐ´¿ØÖÆbit£¨0 = w£¬ 1 = r) bit7 ÏÈ´« */
 	i2c_SendByte(_Address | EEPROM_I2C_WR);
-	ucAck = i2c_WaitAck();	/* æ£€æµ‹è®¾å¤‡çš„ACKåº”ç­” */
+	ucAck = i2c_WaitAck();	/* ¼ì²âÉè±¸µÄACKÓ¦´ð */
 
-	i2c_Stop();			/* å‘é€åœæ­¢ä¿¡å· */
+	i2c_Stop();			/* ·¢ËÍÍ£Ö¹ÐÅºÅ */
 
 	return ucAck;
 }
