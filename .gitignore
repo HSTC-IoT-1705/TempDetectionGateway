@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+Output/
+Listing/
+Project/RVMDK（uv5）/BH-F103.uvguix.ASUS
+Project/RVMDK（uv5）/DebugConfig/AT24C02_STM32F103VE_1.0.0.dbgconf
