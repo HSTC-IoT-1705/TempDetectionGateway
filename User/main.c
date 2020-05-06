@@ -31,6 +31,8 @@ int main(void)
 	USART_Config();
 	printf("MLX90615 额温枪传感器 温度读取测试 \r\n");		
 
+	printf("MLX90615 Check Dvice: %d\n", i2c_CheckDevice(MLX90615_I2C_ADDR << 1));
+
 	printf("MLX90615 ID: %d \n", Temp_GetId());
 	printf("MLX90615 Ambient Temp: %.2f \n", Temp_GetAmbientTemp());
 	printf("MLX90615 Obejct Temp: %.2f \n", Temp_GetObjectTemp());
