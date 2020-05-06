@@ -43,9 +43,15 @@ float Temp_GetAmbientTemp(void) {
 float Temp_GetObjectTemp(void) {
 	float temp;
 
-	temp = Temp_ReadWord16(MLX90615_REG_TEMP_OBJECT) * 0.02 - 273.15;
+	 temp = Temp_ReadWord16(MLX90615_REG_TEMP_OBJECT) * 0.02 - 273.15;
 
-	return temp;
+
+	// printf("----> word= %.2f \n", temp);
+	// printf("----> word * 0.02 = %.2f \n", temp*0.02);
+	// printf("----> word * 0.02 - 273.15 = %.2f \n", temp*0.02-273.15);
+	//printf("----> Object Temp is: %.2f \n", temp);
+
+	return temp + 3;
 }
 
 uint16_t Temp_ReadWord16(uint8_t reg) {
@@ -96,7 +102,7 @@ uint16_t Temp_ReadWord16(uint8_t reg) {
 	data |=  data_high << 8; /* read high byte */
 	printf("data = %d \n", data);
 	i2c_Ack();
-	data = i2c_ReadByte();       /* read and discard PEC (packet error code) */
+	/*data = */i2c_ReadByte();       /* read and discard PEC (packet error code) */
 	i2c_Ack();
 	/* 发送I2C总线停止信号 */
 	i2c_Stop();
